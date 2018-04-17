@@ -1,0 +1,14 @@
+{
+  "name": "runtrains",
+  "version": "1.0.0",
+  "description": "A Web Based DCC Train Control System",
+  "author": "Ben Shell",
+  "license": "GPL",
+  "scripts": {
+    "start": "concurrently --names \"SERVER,CLIENT\" \"cd server && npm start\" \"cd client && npm start\"",
+    "postinstall": "(cd client && npm install); (cd server && npm install);"
+  },
+  "dependencies": {
+    "concurrently": "^3.5.1"
+  }
+}
