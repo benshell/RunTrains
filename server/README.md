@@ -29,7 +29,7 @@ I only have instructions for this using Arch Linux with systemd; please help
     `sudo pacman -Sy`<br>
     `sudo pacman -S nodejs npm`
 
-2.  Create a user and group:<br>
+2.  Create a user and group (with home folder):<br>
     `sudo useradd -mrU runtrains`
 
 3.  Switch to the new user, so that permissions will be correct:<br>
@@ -49,7 +49,7 @@ I only have instructions for this using Arch Linux with systemd; please help
     `exit`
 
 8.  Create systemd service with the following contents:<br>
-    `sudo nano /etc/systemd/system/runtrains.service` (or `vi`, etc)
+    `sudo nano /etc/systemd/system/runtrains.service`
 
 ```
 [Service]
@@ -76,10 +76,17 @@ WantedBy=multi-user.target
     Edit and reinstall service as necessary:<br>
     `sudo systemctl disable runtrains && systemctl enable runtrains && systemctl start runtrains`
 
-11. Bonus tip: unrelated to RunTrains, for running JMRI on Arch Linux I found
-    it helpful to add the JRMI user (probably my user account) to the `uucp`
-    group as otherwise JMRI wasn't able to access my DCC system over USB:<br>
-    `sudo usermod -a -G uucp MYUSER`
+11. Test by going to `http://localhost:8000/graphiql`
+    (or whatever port you've configured), and run a query like:
+    ```
+    {
+      allRosterEntries {
+        name
+      }
+    }
+    ```
+    Due to CORS security rules, any URL you access the server from needs to be
+    in the `CLIENT_URLS` environment variable above.
 
 ## Running a local server over SSL
 
@@ -100,8 +107,8 @@ here is how you can access it from the Internet over HTTPS.
 2.  Setup your local computer/server running this app with a static IP.
 
 3.  Setup port forwarding on your home router to forward port 443 (https) to
-    the local static IP of your server with a destination PORT of your choosing
-    (something over 1000). I'll use 4430 for the remained of this guide.
+    the local static IP of your server with a destination PORT of your choosing.
+    I'll use the default 443 for the remainder of this guide.
 
 4.  Install nginx:<br>
     `sudo pacman -Sy`<br>
@@ -116,43 +123,80 @@ here is how you can access it from the Internet over HTTPS.
 
 6.  Edit the nginx config:<br>
     `sudo nano /etc/nginx/nginx.conf`<br>
-    At the very bottom, add something like this:
+    Inside the http block, add something like this:
 
 ```
-stream {
-    server {
-        listen              4430;
-        proxy_pass          $x;
-        ssl_preread         on;
+map $http_upgrade $connection_upgrade {
+    default upgrade;
+    '' close;
+}
+
+upstream runtrains {
+    server localhost:8000;
+}
+
+server {
+    listen              443 ssl;
+    server_name         HOME.EXAMPLE.COM;
+
+    ssl_certificate /etc/letsencrypt/live/HOME.EXAMPLE.COM/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/HOME.EXAMPLE.COM/privkey.pem;
+    ssl_protocols       TLSv1 TLSv1.1 TLSv1.2;
+    ssl_ciphers         HIGH:!aNULL:!MD5;
+
+    location / {
+        proxy_pass http://runtrains;
     }
 
-    map $ssl_preread_server_name $x {
-        HOME.EXAMPLE.COM runtrains_backend;
+    location /subscriptions {
+        proxy_pass http://runtrains;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection $connection_upgrade;
     }
 
-    upstream runtrains_backend {
-        server localhost:4431;
-    }
-
-    server {
-        listen              4431 ssl;
-        proxy_pass          localhost:8000;
-
-        ssl_certificate     /etc/letsencrypt/live/HOME.EXAMPLE.COM/fullchain.pem;
-        ssl_certificate_key /etc/letsencrypt/live/HOME.EXAMPLE.COM/privkey.pem;
-        ssl_protocols       TLSv1 TLSv1.1 TLSv1.2;
-        ssl_ciphers         HIGH:!aNULL:!MD5;
-    }
 }
 ```
 
-This configuration supports multiple local services on HTTPS using name-based
-routing. For example, perhaps you might want runtrains.YOURDOMAIN.COM as well
-as securitycameras.YOURDOMAIN.COM. If you only need one service, you can
-simplify this configuration as ssl_preread and the map won't be necessary.
+Nginx supports multiple local services on HTTPS using SNI (Server Name
+Indication), which is supported by all modern operating systems (not Windows
+XP with Internet Explorer, or old Android phones). For example, perhaps you
+might want runtrains.YOURDOMAIN.COM as well as securitycameras.YOURDOMAIN.COM.
+You can copy the `upstream` and `server` blocks and change as needed.
 
 7.  Test the config. If no errors, restart nginx:<br>
     `sudo nginx -t`<br>
     `sudo systemctl restart nginx.service`
+
+8.  Test by going to `https://HOME.EXAMPLE.COM/graphiql`. Run a query like
+    ```
+    {
+      allRosterEntries {
+        name
+      }
+    }
+    ```
+    Again, due to CORS security rules, any URL you access the server from needs
+    to be in the `CLIENT_URLS` environment variable, so make sure you have
+    added `https://HOME.EXAMPLE.COM` _if_ you want to access GraphiQL directly
+    like this. If you just want to access from the client throttle app, only that
+    URL needs to be in `CLIENT_URLS`.
+
+## Running JMRI
+
+Unrelated to RunTrains Server, you'll need to run JMRI so here are some notes
+based on my experience that may be helpful (let me know if you have anything to
+add).
+
+### Arch Linux
+
+* I found it helpful to add the JMRI user (my user account) to the
+  `uucp` group as otherwise JMRI wasn't able to access my DCC system over
+  USB:<br>
+  `sudo usermod -a -G uucp MYUSER`
+
+* When starting JMRI from the command line, if you get an error of
+  `No X11 DISPLAY variable was set`, run this first:<br>
+  `export DISPLAY=:0.0`
 
 ## See also the README in the root folder: `../README.md`
