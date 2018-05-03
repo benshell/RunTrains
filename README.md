@@ -4,6 +4,10 @@ RunTrains is a technology stack for running model trains, using a web server
 application and a single-page web app / PWA that can be used on a mobile phone
 or tablet.
 
+![Image of throttle](screenshot-throttle.jpg?raw=true)
+
+![Image of editing a train](screenshot-edit.jpg?raw=true)
+
 ### This is an alternative to the JMRI `WiThrottle` and `Engine Driver` apps.
 
 This system was was built to work with JMRI, which would be interfaced with a
