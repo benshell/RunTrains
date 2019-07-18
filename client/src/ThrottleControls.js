@@ -57,7 +57,7 @@ class ThrottleControls extends React.Component {
 
   componentDidMount() {
     const { data } = this.props
-    if (data && data.speed) {
+    if (data && typeof(data.speed) !== 'undefined') {
       this.setState({
         speed: data.speed,
       })
@@ -66,7 +66,7 @@ class ThrottleControls extends React.Component {
 
   componentWillReceiveProps(nextProps) {
     const { data } = nextProps
-    if (data && data.speed) {
+    if (data && typeof(data.speed) !== 'undefined') {
       this.setState({
         speed: data.speed,
       })
