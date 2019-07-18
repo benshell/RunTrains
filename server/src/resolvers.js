@@ -1,10 +1,10 @@
-import { withFilter } from 'graphql-subscriptions'
-import store from './store'
-import pubsub from './pubsub'
-import { addTrain, updateTrain, removeTrain } from './actions/trains'
-import { getTrain, loadFunctions } from './helpers'
+const { withFilter } = require('graphql-subscriptions')
+const store = require('./store')
+const pubsub = require('./pubsub')
+const { addTrain, updateTrain, removeTrain } = require('./actions/trains')
+const { getTrain, loadFunctions } = require('./helpers')
 
-export const resolvers = {
+const resolvers = {
   Query: {
     train: (root, args) => {
       return getTrain(args.id)
@@ -17,12 +17,16 @@ export const resolvers = {
       return (store.getState().trains || []).map(t => loadFunctions(t))
     },
     allRosterEntries: () => {
+      console.log('allRosterEntries...')
       return store.getState().roster
     },
   },
   Subscription: {
     trainAdded: {
-      subscribe: withFilter(() => pubsub.asyncIterator('trainAdded'), (payload, variables) => true),
+      subscribe: withFilter(
+        () => pubsub.asyncIterator('trainAdded'),
+        (payload, variables) => true,
+      ),
     },
     trainUpdated: {
       subscribe: withFilter(
@@ -60,3 +64,5 @@ export const resolvers = {
     },
   },
 }
+
+module.exports = { resolvers }

@@ -1,7 +1,7 @@
-import { PubSub } from 'graphql-subscriptions'
-import equal from 'deep-equal'
-import store from './store'
-import { getTrain, loadFunctions } from './helpers'
+const { PubSub } = require('graphql-subscriptions')
+const equal = require('deep-equal')
+const store = require('./store')
+const { getTrain, loadFunctions } = require('./helpers')
 
 const pubsub = new PubSub()
 
@@ -40,14 +40,18 @@ store.subscribe(() => {
     const currIDs = currTrains.map(t => t.id)
 
     // Train added
-    currTrains.filter(t => prevIDs.indexOf(t.id) === -1).forEach(t => {
-      pubsub.publish('trainAdded', { trainAdded: loadFunctions(t) })
-    })
+    currTrains
+      .filter(t => prevIDs.indexOf(t.id) === -1)
+      .forEach(t => {
+        pubsub.publish('trainAdded', { trainAdded: loadFunctions(t) })
+      })
 
     // Train removed
-    prevTrains.filter(t => currIDs.indexOf(t.id) === -1).forEach(t => {
-      pubsub.publish('trainRemoved', { trainRemoved: loadFunctions(t) })
-    })
+    prevTrains
+      .filter(t => currIDs.indexOf(t.id) === -1)
+      .forEach(t => {
+        pubsub.publish('trainRemoved', { trainRemoved: loadFunctions(t) })
+      })
 
     // Train updated
     currTrains
@@ -63,4 +67,4 @@ store.subscribe(() => {
   }
 })
 
-export default pubsub
+module.exports = pubsub

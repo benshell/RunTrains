@@ -1,6 +1,6 @@
-import test from 'tape'
-import * as actions from '../../src/actions/trains'
-import * as types from '../../src/actions/types'
+const test = require('tape')
+const actions = require('../../src/actions/trains')
+const types = require('../../src/actions/types')
 
 test('Action: Add train', assert => {
   const address = 3
@@ -15,7 +15,10 @@ test('Action: Add train', assert => {
     addresses: [3, 4],
     orientations: [true, false],
   })
-  assert.ok(actionResult.id.match(/^[\w]{8}-([\w]{4}-){3}[\w]{12}$/), 'generates a UUID')
+  assert.ok(
+    actionResult.id.match(/^[\w]{8}-([\w]{4}-){3}[\w]{12}$/),
+    'generates a UUID',
+  )
   assert.deepEqual(actionResult, { id: actionResult.id, ...expectedAction })
   assert.end()
 })
@@ -41,6 +44,9 @@ test('Action: Remove train', assert => {
     type: types.REMOVE_TRAIN,
     id: 'aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa',
   }
-  assert.deepEqual(actions.removeTrain('aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa'), expectedAction)
+  assert.deepEqual(
+    actions.removeTrain('aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa'),
+    expectedAction,
+  )
   assert.end()
 })

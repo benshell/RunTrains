@@ -1,5 +1,8 @@
-import { makeExecutableSchema, addMockFunctionsToSchema } from 'graphql-tools'
-import { resolvers } from './resolvers'
+const {
+  makeExecutableSchema,
+  addMockFunctionsToSchema,
+} = require('graphql-tools')
+const { resolvers } = require('./resolvers')
 
 // SEE: https://www.apollographql.com/docs/graphql-tools/generate-schema.html
 // https://dev-blog.apollodata.com/tutorial-building-a-graphql-server-cddaa023c035?_ga=2.63082540.2035828546.1519438337-333598611.1515894498
@@ -124,7 +127,11 @@ type RosterEntry {
 }
 `
 
-export const schema = makeExecutableSchema({
+const schema = makeExecutableSchema({
   typeDefs,
   resolvers,
 })
+
+module.exports = {
+  schema,
+}

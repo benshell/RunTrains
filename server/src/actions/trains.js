@@ -1,10 +1,10 @@
-import * as types from './types'
-import uuid from 'uuid'
+const types = require('./types')
+const uuid = require('uuid')
 
 /**
  * Action creators
  */
-export function addTrain(args) {
+function addTrain(args) {
   return {
     type: types.ADD_TRAIN,
     id: uuid(),
@@ -14,16 +14,18 @@ export function addTrain(args) {
   }
 }
 
-export function updateTrain(args) {
+function updateTrain(args) {
   return {
     type: types.UPDATE_TRAIN,
     ...args,
   }
 }
 
-export function removeTrain(id) {
+function removeTrain(id) {
   return {
     type: types.REMOVE_TRAIN,
     id: id,
   }
 }
+
+module.exports = { addTrain, updateTrain, removeTrain }

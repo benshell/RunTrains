@@ -1,12 +1,12 @@
-import store from './store'
+const store = require('./store')
 
-export const getTrain = id => {
+const getTrain = id => {
   const trains = store.getState().trains || []
   const train = trains.find(t => t.id === id)
   return loadFunctions(train)
 }
 
-export const loadFunctions = train => {
+const loadFunctions = train => {
   if (!train) return
   const roster = store.getState().roster || []
   const rosterEntry = roster.find(r => r.address === train.addresses[0])
@@ -20,4 +20,9 @@ export const loadFunctions = train => {
     ...train,
     functions,
   }
+}
+
+module.exports = {
+  getTrain,
+  loadFunctions,
 }

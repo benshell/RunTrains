@@ -1,7 +1,7 @@
-import produce from 'immer'
-import * as types from '../actions/types'
+const produce = require('immer').default
+const types = require('../actions/types')
 
-export default (state = [], action) => {
+const trains = (state = [], action) => {
   const { type, ...train } = action
   let existing
   return produce(state, draft => {
@@ -14,7 +14,10 @@ export default (state = [], action) => {
             orientations: [],
             speed: 0,
             forward: true,
-            functions: [...Array(29)].map((v, i) => ({ name: `F${i}`, value: false })),
+            functions: [...Array(29)].map((v, i) => ({
+              name: `F${i}`,
+              value: false,
+            })),
             ...train,
           }
           draft.push(newTrain)
@@ -41,3 +44,5 @@ export default (state = [], action) => {
     }
   })
 }
+
+module.exports = trains

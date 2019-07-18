@@ -1,7 +1,7 @@
-import proxyquire from 'proxyquire'
-import test from 'tape'
-import request from 'supertest'
-import app from '../../src/app'
+const proxyquire = require('proxyquire')
+const test = require('tape')
+const request = require('supertest')
+const app = require('../../src/app')
 
 test('GET /', assert => {
   request(app)
@@ -11,7 +11,11 @@ test('GET /', assert => {
     .end(function(err, res) {
       assert.error(err, 'No error')
       assert.equal(res.status, 200, 'Status code is correct')
-      assert.equal(res.text.indexOf('/graphiql') > -1, true, 'Contains mention of /graphiql')
+      assert.equal(
+        res.text.indexOf('/graphiql') > -1,
+        true,
+        'Contains mention of /graphiql',
+      )
       assert.end()
     })
 })

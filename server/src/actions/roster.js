@@ -1,9 +1,9 @@
-import * as types from './types'
+const types = require('./types')
 
 /**
  * Action creators
  */
-export function syncRoster(data) {
+function syncRoster(data) {
   const entries = Object.values(data)
   return {
     type: types.SYNC_ROSTER,
@@ -21,3 +21,5 @@ export function syncRoster(data) {
       })),
   }
 }
+
+module.exports = { syncRoster }

@@ -1,14 +1,14 @@
-import express from 'express'
-import { graphqlExpress, graphiqlExpress } from 'apollo-server-express'
-import { execute, subscribe } from 'graphql'
-import { createServer } from 'http'
-import { SubscriptionServer } from 'subscriptions-transport-ws'
-import bodyParser from 'body-parser'
-import { setTimeout } from 'timers'
-import cors from 'cors'
-import jmri from './jmri'
-import { PORT, CLIENT_URLS } from './constants'
-import { schema } from './schema'
+const express = require('express')
+const { graphqlExpress, graphiqlExpress } = require('apollo-server-express')
+const { execute, subscribe } = require('graphql')
+const { createServer } = require('http')
+const { SubscriptionServer } = require('subscriptions-transport-ws')
+const bodyParser = require('body-parser')
+const { setTimeout } = require('timers')
+const cors = require('cors')
+const jmri = require('./jmri')
+const { PORT, CLIENT_URLS } = require('./constants')
+const { schema } = require('./schema')
 
 const app = express()
 app.set('port', PORT)
@@ -74,4 +74,4 @@ if (require.main === module) {
   })
 }
 
-export default app
+module.exports = app

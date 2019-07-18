@@ -1,7 +1,7 @@
-import test from 'tape'
-import * as actions from '../../src/actions/roster'
-import * as types from '../../src/actions/types'
-import roster from '../data/roster'
+const test = require('tape')
+const actions = require('../../src/actions/roster')
+const types = require('../../src/actions/types')
+const roster = require('../data/roster')
 
 test('Action: Sync roster (from JMRI)', assert => {
   const actionResult = actions.syncRoster(roster)

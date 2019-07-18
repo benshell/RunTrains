@@ -1,8 +1,8 @@
-import { combineReducers } from 'redux'
-import trains from './trains'
-import roster from './roster'
+const { combineReducers } = require('redux')
+const trains = require('./trains')
+const roster = require('./roster')
 
-export default combineReducers({
+module.exports = combineReducers({
   trains,
   roster,
 })

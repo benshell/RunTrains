@@ -1,6 +1,6 @@
-import * as types from '../actions/types'
+const types = require('../actions/types')
 
-export default (state = [], action) => {
+const roster = (state = [], action) => {
   const { type, ...data } = action
   switch (type) {
     case types.SYNC_ROSTER:
@@ -9,3 +9,5 @@ export default (state = [], action) => {
       return state
   }
 }
+
+module.exports = roster

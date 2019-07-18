@@ -1,11 +1,17 @@
-import WebSocket from 'ws'
-import axios from 'axios'
-import store from './store'
-import { MOCK_JMRI, JMRI_HOST, JMRI_PORT, JMRI_HEARTBEAT_INTERVAL, DEBUGGING } from './constants'
-import { updateTrain } from './actions'
-import { syncRoster } from './actions/roster'
-import rosterData from '../tests/data/roster'
-import pubsub from './pubsub'
+const WebSocket = require('ws')
+const axios = require('axios')
+const store = require('./store')
+const {
+  MOCK_JMRI,
+  JMRI_HOST,
+  JMRI_PORT,
+  JMRI_HEARTBEAT_INTERVAL,
+  DEBUGGING,
+} = require('./constants')
+const { updateTrain } = require('./actions/trains')
+const { syncRoster } = require('./actions/roster')
+const rosterData = require('../tests/data/roster')
+const pubsub = require('./pubsub')
 
 const JMRI_WS_API = `ws://${JMRI_HOST}:${JMRI_PORT}/json/`
 const JMRI_JSON_API = `http://${JMRI_HOST}:${JMRI_PORT}/json/`
@@ -26,6 +32,7 @@ if (MOCK_JMRI) {
   jmri.send = () => {}
 } else {
   jmri.init = () => {
+    console.info('Initializing JMRI connection', JMRI_WS_API)
     if (ws) ws.terminate()
     ws = new WebSocket(JMRI_WS_API)
 
@@ -38,6 +45,7 @@ if (MOCK_JMRI) {
     })
 
     ws.on('open', function open() {
+      console.log('JMRI connection open')
       wsReady = true
 
       jmri.loadRoster()
@@ -83,7 +91,14 @@ if (MOCK_JMRI) {
       if (DEBUGGING) console.log('JMRI receive:', message)
       switch (type) {
         case 'throttle':
-          const { throttle, speed, forward, speedSteps, clients, ...functionUpdates } = data
+          const {
+            throttle,
+            speed,
+            forward,
+            speedSteps,
+            clients,
+            ...functionUpdates
+          } = data
           const address = parseInt(throttle, 10)
           const trains = store.getState().trains
           const speedChange =
@@ -98,17 +113,19 @@ if (MOCK_JMRI) {
                   forward,
                 }
               : {}
-          trains.filter(train => train.addresses.indexOf(address) > -1).forEach(train => {
-            store.dispatch(
-              updateTrain({
-                id: train.id,
-                source: 'jmri',
-                ...speedChange,
-                ...dirChange,
-                functionUpdates,
-              }),
-            )
-          })
+          trains
+            .filter(train => train.addresses.indexOf(address) > -1)
+            .forEach(train => {
+              store.dispatch(
+                updateTrain({
+                  id: train.id,
+                  source: 'jmri',
+                  ...speedChange,
+                  ...dirChange,
+                  functionUpdates,
+                }),
+              )
+            })
           break
       }
     })
@@ -160,7 +177,10 @@ pubsub.subscribe('trainUpdated', data => {
   const { trainUpdated: train } = data
   const { source, functions, ...changes } = data.changes || {}
   if (train.source === 'jmri') return
-  const fnChanges = (functions || []).reduce((acc, val) => ({ ...acc, [val.name]: val.value }), {})
+  const fnChanges = (functions || []).reduce(
+    (acc, val) => ({ ...acc, [val.name]: val.value }),
+    {},
+  )
   let dirChanges = {}
   train.addresses.forEach((address, index) => {
     dirChanges = changes.hasOwnProperty('speed')
@@ -200,4 +220,4 @@ pubsub.subscribe('trainRemoved', ({ trainRemoved: train }) => {
   })
 })
 
-export default jmri
+module.exports = jmri

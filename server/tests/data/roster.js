@@ -1,4 +1,4 @@
-export default {
+const roster = {
   '0': {
     type: 'rosterEntry',
     data: {
@@ -84,3 +84,5 @@ export default {
     },
   },
 }
+
+module.exports = roster

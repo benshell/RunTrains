@@ -1,8 +1,8 @@
-import test from 'tape'
-import proxyquire from 'proxyquire'
-import reducer from '../../src/reducers/trains'
-import actions from '../../src/actions/trains'
-import * as types from '../../src/actions/types'
+const test = require('tape')
+const proxyquire = require('proxyquire')
+const reducer = require('../../src/reducers/trains')
+const actions = require('../../src/actions/trains')
+const types = require('../../src/actions/types')
 
 test('Train reducer: initial state', assert => {
   assert.deepEqual(reducer(undefined, {}), [])
@@ -26,7 +26,10 @@ test('Train reducer: add train', assert => {
         orientations: [true],
         speed: 0,
         forward: true,
-        functions: [...Array(29)].map((f, i) => ({ name: `F${i}`, value: false })),
+        functions: [...Array(29)].map((f, i) => ({
+          name: `F${i}`,
+          value: false,
+        })),
       },
     ],
   )

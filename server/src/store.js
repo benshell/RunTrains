@@ -1,7 +1,7 @@
-import { createStore, applyMiddleware } from 'redux'
-import thunk from 'redux-thunk'
-import rootReducer from './reducers'
-import { createLogger } from 'redux-logger'
+const { createStore, applyMiddleware } = require('redux')
+const thunk = require('redux-thunk').default
+const rootReducer = require('./reducers')
+const { createLogger } = require('redux-logger')
 
 const logger = createLogger({
   logger: {
@@ -12,6 +12,10 @@ const logger = createLogger({
     },
   },
 })
-let store = createStore(rootReducer, applyMiddleware(thunk), applyMiddleware(logger))
+let store = createStore(
+  rootReducer,
+  applyMiddleware(thunk),
+  applyMiddleware(logger),
+)
 
-export default store
+module.exports = store
