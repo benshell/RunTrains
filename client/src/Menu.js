@@ -5,7 +5,7 @@ import List, { ListItem, ListItemIcon, ListItemText } from 'material-ui/List'
 import TrainIcon from '@material-ui/icons/Train'
 // import ListIcon from '@material-ui/icons/List'
 // import PeopleIcon from '@material-ui/icons/People'
-// import SettingsIcon from '@material-ui/icons/Settings'
+import SettingsIcon from '@material-ui/icons/Settings'
 
 const styles = theme => ({})
 
@@ -43,18 +43,18 @@ const Menu = ({ history }) => (
         <PeopleIcon />
       </ListItemIcon>
       <ListItemText primary="Users" />
-    </ListItem>
+    </ListItem>*/}
     <ListItem
       button
       onClick={() => {
-        history.push('/settings')
+        history.push('/system')
       }}
     >
       <ListItemIcon>
         <SettingsIcon />
       </ListItemIcon>
-      <ListItemText primary="Settings" />
-    </ListItem> */}
+      <ListItemText primary="System" />
+    </ListItem> 
   </List>
 )
 

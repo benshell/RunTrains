@@ -2,11 +2,16 @@ import React, { Component } from 'react'
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom'
 import Frame from './Frame'
 import Throttles from './Throttles'
+import System from './System'
 import withRoot from './withRoot'
 import { withStyles } from 'material-ui/styles'
 import './App.css'
 
-const styles = theme => ({})
+const styles = theme => ({
+  root: {
+    color: '#fff',
+  },
+})
 
 class App extends Component {
   componentDidMount() {
@@ -27,7 +32,8 @@ class App extends Component {
       <Router>
         <Frame>
           <Switch>
-            <Route component={Throttles} />
+            <Route path="/" exact component={Throttles} />
+            <Route path="/system" component={System} />
           </Switch>
         </Frame>
       </Router>
