@@ -3,12 +3,14 @@
   "version": "1.0.0",
   "description": "A Web Based DCC Train Control System",
   "author": "Ben Shell",
-  "license": "GPL",
+  "license": "GPL-3.0-or-later",
   "scripts": {
     "start": "concurrently --names \"SERVER,CLIENT\" \"cd server && npm start\" \"cd client && npm start\"",
     "postinstall": "(cd client && npm install); (cd server && npm install);"
   },
   "dependencies": {
+    "apollo-cache-inmemory": "^1.6.2",
+    "apollo-link": "^1.2.12",
     "concurrently": "^3.5.1"
   }
 }
