@@ -1,9 +1,9 @@
 import React, { PureComponent } from 'react'
 import { Query } from 'react-apollo'
-import { withStyles } from 'material-ui/styles'
+import { withStyles } from '@material-ui/core/styles'
 import ThrottleTabs from './ThrottleTabs'
-import Button from 'material-ui/Button'
-import Drawer from 'material-ui/Drawer'
+import Button from '@material-ui/core/Button'
+import Drawer from '@material-ui/core/Drawer'
 import TrainAdd from './TrainAdd'
 import { ALL_TRAINS } from './queries'
 
@@ -40,14 +40,18 @@ class Throttles extends PureComponent {
           return (
             <div className={classes.root}>
               {trains.allTrains.length ? (
-                <ThrottleTabs onAdd={this.toggleThrottleRequest} throttles={trains.allTrains} />
+                <ThrottleTabs
+                  onAdd={this.toggleThrottleRequest}
+                  throttles={trains.allTrains}
+                />
               ) : (
                 <Button
                   className={classes.requestBtn}
-                  variant="raised"
+                  variant="contained"
                   size="large"
                   color="primary"
-                  onClick={this.toggleThrottleRequest}>
+                  onClick={this.toggleThrottleRequest}
+                >
                   Add train
                 </Button>
               )}
@@ -55,7 +59,8 @@ class Throttles extends PureComponent {
               <Drawer
                 anchor="bottom"
                 open={this.state.requestThrottle}
-                onClose={this.toggleThrottleRequest}>
+                onClose={this.toggleThrottleRequest}
+              >
                 <TrainAdd onClose={this.toggleThrottleRequest} />
               </Drawer>
             </div>

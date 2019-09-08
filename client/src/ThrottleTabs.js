@@ -1,13 +1,14 @@
 import React from 'react'
-import AppBar from 'material-ui/AppBar'
-import Tabs, { Tab } from 'material-ui/Tabs'
-import Toolbar from 'material-ui/Toolbar'
-import IconButton from 'material-ui/IconButton'
+import AppBar from '@material-ui/core/AppBar'
+import Tabs from '@material-ui/core/Tabs'
+import Tab from '@material-ui/core/Tab'
+import Toolbar from '@material-ui/core/Toolbar'
+import IconButton from '@material-ui/core/IconButton'
 import SwipeableViews from 'react-swipeable-views'
-import { withStyles } from 'material-ui/styles'
+import { withStyles } from '@material-ui/core/styles'
 import AddIcon from '@material-ui/icons/AddCircle'
-import Button from 'material-ui/Button'
-import Drawer from 'material-ui/Drawer'
+import Fab from '@material-ui/core/Fab'
+import Drawer from '@material-ui/core/Drawer'
 import EditIcon from '@material-ui/icons/Edit'
 import Throttle from './Throttle'
 import TrainEdit from './TrainEdit'
@@ -15,7 +16,8 @@ import TrainEdit from './TrainEdit'
 const styles = theme => ({
   root: {
     width: '100%',
-    flex: '1 1 100%',
+    height: '100%',
+    flex: '0 0 100%',
     display: 'flex',
     flexDirection: 'column',
   },
@@ -82,7 +84,9 @@ class ThrottleTabs extends React.PureComponent {
               textColor="primary"
               scrollButtons="on"
             >
-              {throttles.map(throttle => <Tab key={throttle.name} label={throttle.name} />)}
+              {throttles.map(throttle => (
+                <Tab key={throttle.name} label={throttle.name} />
+              ))}
             </Tabs>
             <IconButton onClick={onAdd} color="inherit">
               <AddIcon />
@@ -106,18 +110,24 @@ class ThrottleTabs extends React.PureComponent {
           </SwipeableViews>
         </div>
 
-        <Button
-          variant="fab"
+        <Fab
           color="primary"
           aria-label="edit"
           className={classes.actionBtn}
           onClick={this.handleTrainEdit}
         >
           <EditIcon />
-        </Button>
+        </Fab>
 
-        <Drawer anchor="bottom" open={this.state.editThrottle} onClose={this.handleTrainEdit}>
-          <TrainEdit onClose={this.handleTrainEdit} id={throttles[currentThrottle].id} />
+        <Drawer
+          anchor="bottom"
+          open={this.state.editThrottle}
+          onClose={this.handleTrainEdit}
+        >
+          <TrainEdit
+            onClose={this.handleTrainEdit}
+            id={throttles[currentThrottle].id}
+          />
         </Drawer>
       </div>
     )

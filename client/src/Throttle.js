@@ -1,5 +1,6 @@
 import React from 'react'
-import { compose, graphql } from 'react-apollo'
+import { graphql } from 'react-apollo'
+import { compose } from 'recompose'
 import ThrottleControls from './ThrottleControls'
 import { TRAIN, UPDATE_TRAIN, TRAIN_UPDATED } from './queries'
 
@@ -19,7 +20,13 @@ export class Throttle extends React.PureComponent {
     if (data.loading) return <div>Loading...</div>
     if (!data.train) return <div>No train data loaded!</div>
     const { train } = data
-    return <ThrottleControls data={train} onChange={this.handleChange} height={height} />
+    return (
+      <ThrottleControls
+        data={train}
+        onChange={this.handleChange}
+        height={height}
+      />
+    )
   }
 }
 
@@ -57,7 +64,11 @@ const withMutation = graphql(UPDATE_TRAIN, {
           ...train,
           ...vars,
           functions: train.functions.map(fn => {
-            if (!vars.functions || typeof vars.functions[fn.name] === 'undefined') return fn
+            if (
+              !vars.functions ||
+              typeof vars.functions[fn.name] === 'undefined'
+            )
+              return fn
             return { ...fn, value: vars.functions[fn.name] }
           }),
         }
@@ -72,6 +83,7 @@ const withMutation = graphql(UPDATE_TRAIN, {
               query: TRAIN,
               variables: { id: updateTrain.id },
             })
+            // TODO: Send increment updates for functions
             data.train = { ...data.train, ...updateTrain }
             proxy.writeQuery({
               query: TRAIN,
@@ -85,4 +97,7 @@ const withMutation = graphql(UPDATE_TRAIN, {
   },
 })
 
-export default compose(withMutation, withQuery)(Throttle)
+export default compose(
+  withMutation,
+  withQuery,
+)(Throttle)

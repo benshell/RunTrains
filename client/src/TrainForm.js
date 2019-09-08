@@ -1,51 +1,56 @@
 import React from 'react'
-import { withStyles } from 'material-ui/styles'
-import Typography from 'material-ui/Typography'
-import Button from 'material-ui/Button'
-import IconButton from 'material-ui/IconButton'
-import { InputLabel } from 'material-ui/Input'
-import { FormControl, FormControlLabel, FormHelperText } from 'material-ui/Form'
-import Select from 'material-ui/Select'
-import TextField from 'material-ui/TextField'
-import Checkbox from 'material-ui/Checkbox'
+import { withStyles } from '@material-ui/core/styles'
+import Typography from '@material-ui/core/Typography'
+import Button from '@material-ui/core/Button'
+import IconButton from '@material-ui/core/IconButton'
+import InputLabel from '@material-ui/core/InputLabel'
+import FormControl from '@material-ui/core/FormControl'
+import FormControlLabel from '@material-ui/core/FormControlLabel'
+import FormHelperText from '@material-ui/core/FormHelperText'
+import Select from '@material-ui/core/Select'
+import TextField from '@material-ui/core/TextField'
+import Checkbox from '@material-ui/core/Checkbox'
 import AddIcon from '@material-ui/icons/AddCircle'
 import DragIcon from '@material-ui/icons/DragHandle'
 import SaveIcon from '@material-ui/icons/Save'
 import DeleteIcon from '@material-ui/icons/Delete'
 import ForwardIcon from '@material-ui/icons/Forward'
 
-import Dialog, {
-  DialogActions,
-  DialogContent,
-  DialogContentText,
-  DialogTitle,
-} from 'material-ui/Dialog'
-import Slide from 'material-ui/transitions/Slide'
-import { SortableContainer, SortableElement, SortableHandle, arrayMove } from 'react-sortable-hoc'
+import Dialog from '@material-ui/core/Dialog'
+import DialogActions from '@material-ui/core/DialogActions'
+import DialogContent from '@material-ui/core/DialogContent'
+import DialogContentText from '@material-ui/core/DialogContentText'
+import DialogTitle from '@material-ui/core/DialogTitle'
+import {
+  SortableContainer,
+  SortableElement,
+  SortableHandle,
+  arrayMove,
+} from 'react-sortable-hoc'
 
 const styles = theme => ({
   form: {
-    padding: theme.spacing.unit * 2,
+    padding: theme.spacing(2),
   },
   textField: {
     display: 'block',
   },
   formControl: {
     display: 'block',
-    marginTop: theme.spacing.unit * 3,
+    marginTop: theme.spacing(3),
     marginBottom: 0,
   },
   buttons: {
-    marginTop: theme.spacing.unit * 3,
+    marginTop: theme.spacing(3),
     display: 'grid',
     gridTemplateColumns: '1fr 1fr 1fr',
     gridGap: '10px',
   },
   buttonIcon: {
-    marginRight: theme.spacing.unit,
+    marginRight: theme.spacing(1),
   },
   sortableContainer: {
-    paddingTop: theme.spacing.unit * 2,
+    paddingTop: theme.spacing(2),
   },
   sortableItem: {
     display: 'flex',
@@ -56,74 +61,78 @@ const styles = theme => ({
     margin: '0 10px 0 0',
   },
   addButton: {
-    marginLeft: theme.spacing.unit * -2,
+    marginLeft: theme.spacing(-2),
   },
   addIcon: {
-    marginRight: theme.spacing.unit,
+    marginRight: theme.spacing(1),
   },
   checkReversed: {
     marginLeft: 0,
-    marginRight: theme.spacing.unit * -1,
+    marginRight: theme.spacing(-1),
   },
   iconReversed: {
     transform: 'rotate(180deg)',
   },
 })
 
-function Transition(props) {
-  return <Slide direction="up" {...props} />
-}
-
 const DragHandle = SortableHandle(({ classes }) => (
   <DragIcon color="action" className={classes.dragHandle} />
 ))
 
-const SortableItem = SortableElement(({ value, options, classes, handleChange, canDelete }) => {
-  return (
-    <div className={classes.sortableItem}>
-      <DragHandle classes={classes} />
-      <Select native value={value.address} onChange={handleChange('address')}>
-        {options}
-      </Select>
-      <FormControlLabel
-        className={classes.checkReversed}
-        aria-label="Reversed?"
-        control={
-          <Checkbox
-            icon={<ForwardIcon />}
-            checkedIcon={<ForwardIcon className={classes.iconReversed} />}
-            checked={value.reversed}
-            onChange={handleChange('reversed')}
-            value="reversed"
-          />
-        }
-      />
-      {canDelete ? (
-        <IconButton className={classes.button} aria-label="Delete" onClick={handleChange('delete')}>
-          <DeleteIcon />
-        </IconButton>
-      ) : null}
-    </div>
-  )
-})
-
-const SortableList = SortableContainer(({ items, classes, handleChange, ...props }) => {
-  return (
-    <div className={classes.sortableContainer}>
-      {items.map((value, index) => (
-        <SortableItem
-          key={index}
-          index={index}
-          value={value}
-          classes={classes}
-          handleChange={handleChange(index)}
-          canDelete={items.length > 1}
-          {...props}
+const SortableItem = SortableElement(
+  ({ value, options, classes, handleChange, canDelete }) => {
+    return (
+      <div className={classes.sortableItem}>
+        <DragHandle classes={classes} />
+        <Select native value={value.address} onChange={handleChange('address')}>
+          {options}
+        </Select>
+        <FormControlLabel
+          className={classes.checkReversed}
+          aria-label="Reversed?"
+          control={
+            <Checkbox
+              icon={<ForwardIcon />}
+              checkedIcon={<ForwardIcon className={classes.iconReversed} />}
+              checked={value.reversed}
+              onChange={handleChange('reversed')}
+              value="reversed"
+            />
+          }
         />
-      ))}
-    </div>
-  )
-})
+        {canDelete ? (
+          <IconButton
+            className={classes.button}
+            aria-label="Delete"
+            onClick={handleChange('delete')}
+          >
+            <DeleteIcon />
+          </IconButton>
+        ) : null}
+      </div>
+    )
+  },
+)
+
+const SortableList = SortableContainer(
+  ({ items, classes, handleChange, ...props }) => {
+    return (
+      <div className={classes.sortableContainer}>
+        {items.map((value, index) => (
+          <SortableItem
+            key={index}
+            index={index}
+            value={value}
+            classes={classes}
+            handleChange={handleChange(index)}
+            canDelete={items.length > 1}
+            {...props}
+          />
+        ))}
+      </div>
+    )
+  },
+)
 
 class TrainForm extends React.PureComponent {
   state = {
@@ -185,9 +194,12 @@ class TrainForm extends React.PureComponent {
 
         // Also fill in the train name, if blank or matching previous
         const { name: prevName } =
-          this.props.roster.find(r => r.address === train.addresses[index]) || {}
-        const { name: thisName } = this.props.roster.find(r => r.address === addresses[index]) || {}
-        const name = !train.name || train.name === prevName ? thisName || '' : train.name
+          this.props.roster.find(r => r.address === train.addresses[index]) ||
+          {}
+        const { name: thisName } =
+          this.props.roster.find(r => r.address === addresses[index]) || {}
+        const name =
+          !train.name || train.name === prevName ? thisName || '' : train.name
 
         this.setState({
           train: { ...train, name, addresses },
@@ -270,7 +282,8 @@ class TrainForm extends React.PureComponent {
     })
 
     // Also fill in the train name, if blank or matching previous
-    const { name: thisName } = this.props.roster.find(r => r.address === address) || {}
+    const { name: thisName } =
+      this.props.roster.find(r => r.address === address) || {}
     const name = train.name || thisName || `Locomotive #${address}`
 
     this.setState({
@@ -296,7 +309,12 @@ class TrainForm extends React.PureComponent {
       { name: '<Enter DCC address>', address: -1 },
     ]
       .concat(roster.map(r => ({ name: r.name, address: r.address })))
-      .concat(customAddresses.map(address => ({ name: `DCC Address: ${address}`, address })))
+      .concat(
+        customAddresses.map(address => ({
+          name: `DCC Address: ${address}`,
+          address,
+        })),
+      )
       .map(r => (
         <option key={r.address} value={r.address}>
           {r.name}
@@ -311,7 +329,7 @@ class TrainForm extends React.PureComponent {
     return (
       <div className={classes.root}>
         <form className={classes.form} onSubmit={this.handleSubmit}>
-          <Typography variant="title" color="default">
+          <Typography variant="h5">
             {train.id ? 'Edit' : 'Add'} train
           </Typography>
 
@@ -358,7 +376,7 @@ class TrainForm extends React.PureComponent {
             <Button
               disabled={!train.name}
               className={classes.button}
-              variant="raised"
+              variant="contained"
               color="primary"
               onClick={this.handleSubmit}
             >
@@ -368,21 +386,25 @@ class TrainForm extends React.PureComponent {
             {train.id && (
               <Button
                 className={classes.button}
-                variant="raised"
+                variant="contained"
                 color="secondary"
                 onClick={this.handleRemove}
               >
                 Release
               </Button>
             )}
-            <Button className={classes.button} variant="raised" color="inherit" onClick={onClose}>
+            <Button
+              className={classes.button}
+              variant="contained"
+              color="inherit"
+              onClick={onClose}
+            >
               Cancel
             </Button>
           </div>
         </form>
         <Dialog
           open={this.state.confirmDialogOpen}
-          transition={Transition}
           keepMounted
           onClose={this.handleDialogClose}
           aria-labelledby="alert-dialog-slide-title"
@@ -407,16 +429,18 @@ class TrainForm extends React.PureComponent {
         </Dialog>
         <Dialog
           open={this.state.addressDialogOpen}
-          transition={Transition}
           keepMounted
           onClose={this.handleDialogClose}
           aria-labelledby="alert-dialog-slide-title"
           aria-describedby="alert-dialog-slide-description"
         >
-          <DialogTitle id="alert-dialog-slide-title">Enter a DCC address</DialogTitle>
+          <DialogTitle id="alert-dialog-slide-title">
+            Enter a DCC address
+          </DialogTitle>
           <DialogContent>
             <DialogContentText id="alert-dialog-slide-description">
-              If a locomotive isn't in the roster, you can enter the DCC address here:
+              If a locomotive isn't in the roster, you can enter the DCC address
+              here:
             </DialogContentText>
             <form onSubmit={this.handleAddressSubmit}>
               <TextField

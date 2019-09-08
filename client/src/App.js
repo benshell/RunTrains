@@ -4,7 +4,7 @@ import Frame from './Frame'
 import Throttles from './Throttles'
 import System from './System'
 import withRoot from './withRoot'
-import { withStyles } from 'material-ui/styles'
+import { withStyles } from '@material-ui/core/styles'
 import './App.css'
 
 const styles = theme => ({

@@ -1,6 +1,6 @@
 import React from 'react'
 import Draggable from 'react-draggable'
-import { withStyles } from 'material-ui/styles'
+import { withStyles } from '@material-ui/core/styles'
 
 const styles = theme => ({})
 const barWidth = 20
@@ -50,8 +50,8 @@ class ThrottleSlider extends React.PureComponent {
       const knobColor = isActive
         ? theme.palette.secondary.light
         : value > 0
-          ? theme.palette.secondary.main
-          : theme.palette.primary.main
+        ? theme.palette.secondary.main
+        : theme.palette.primary.main
       const position = value * (knobHeight - height) + height - knobHeight
       const label = Math.round(value * range)
 
@@ -76,7 +76,8 @@ class ThrottleSlider extends React.PureComponent {
           width={`${width}px`}
           height={`${height}px`}
           viewBox={`0 0 ${width} ${height}`}
-          preserveAspectRatio="none">
+          preserveAspectRatio="none"
+        >
           {lines.map((line, i) => (
             <line
               key={i}
@@ -85,7 +86,9 @@ class ThrottleSlider extends React.PureComponent {
               x2={line.x2}
               y2={line.y}
               strokeWidth="1"
-              stroke={isActive ? theme.palette.grey[500] : theme.palette.grey[600]}
+              stroke={
+                isActive ? theme.palette.grey[500] : theme.palette.grey[600]
+              }
             />
           ))}
           <rect
@@ -103,7 +106,8 @@ class ThrottleSlider extends React.PureComponent {
             bounds={{ top: 0, bottom: height - knobHeight }}
             onStart={this.onStart}
             onStop={this.onStop}
-            onDrag={this.onDrag}>
+            onDrag={this.onDrag}
+          >
             <g transform={`translate(0,0)`}>
               <rect
                 x={(width - knobWidth) / 2}
@@ -121,7 +125,8 @@ class ThrottleSlider extends React.PureComponent {
                 alignmentBaseline="middle"
                 fontSize="16"
                 stroke="none"
-                fill={theme.palette.primary.contrastText}>
+                fill={theme.palette.primary.contrastText}
+              >
                 {label}
               </text>
             </g>
@@ -138,7 +143,8 @@ class ThrottleSlider extends React.PureComponent {
         style={{
           overflow: 'hidden',
         }}
-        {...props}>
+        {...props}
+      >
         {children}
       </div>
     )

@@ -1,6 +1,7 @@
 import React from 'react'
-import { compose, graphql } from 'react-apollo'
-import { withStyles } from 'material-ui/styles'
+import { graphql } from 'react-apollo'
+import { compose } from 'recompose'
+import { withStyles } from '@material-ui/core/styles'
 import { NETWORK_STATUS } from './queries'
 
 const styles = theme => ({
@@ -51,4 +52,7 @@ const withQuery = graphql(NETWORK_STATUS, {
   name: 'network',
 })
 
-export default compose(withQuery, withStyles(styles))(StatusMessages)
+export default compose(
+  withQuery,
+  withStyles(styles),
+)(StatusMessages)

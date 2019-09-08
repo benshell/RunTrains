@@ -1,7 +1,10 @@
 import React from 'react'
 import { withRouter } from 'react-router'
-import { withStyles } from 'material-ui/styles'
-import List, { ListItem, ListItemIcon, ListItemText } from 'material-ui/List'
+import { withStyles } from '@material-ui/core/styles'
+import List from '@material-ui/core/List'
+import ListItem from '@material-ui/core/ListItem'
+import ListItemIcon from '@material-ui/core/ListItemIcon'
+import ListItemText from '@material-ui/core/ListItemText'
 import TrainIcon from '@material-ui/icons/Train'
 // import ListIcon from '@material-ui/icons/List'
 // import PeopleIcon from '@material-ui/icons/People'
@@ -54,7 +57,7 @@ const Menu = ({ history }) => (
         <SettingsIcon />
       </ListItemIcon>
       <ListItemText primary="System" />
-    </ListItem> 
+    </ListItem>
   </List>
 )
 

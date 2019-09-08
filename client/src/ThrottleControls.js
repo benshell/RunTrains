@@ -1,9 +1,11 @@
 import React from 'react'
-import Button from 'material-ui/Button'
-import { withStyles } from 'material-ui/styles'
+import Button from '@material-ui/core/Button'
+import { withStyles } from '@material-ui/core/styles'
 import ThrottleSlider from './ThrottleSlider'
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft'
 import ChevronRightIcon from '@material-ui/icons/ChevronRight'
+import StopIcon from '@material-ui/icons/Stop'
+import { Fab } from '@material-ui/core'
 
 const styles = theme => ({
   root: {
@@ -47,6 +49,7 @@ const styles = theme => ({
     gridColumn: '1 / 3',
     gridRow: 10,
     justifySelf: 'center',
+    backgroundColor: '#ff0000',
   },
 })
 
@@ -57,7 +60,7 @@ class ThrottleControls extends React.Component {
 
   componentDidMount() {
     const { data } = this.props
-    if (data && typeof(data.speed) !== 'undefined') {
+    if (data && typeof data.speed !== 'undefined') {
       this.setState({
         speed: data.speed,
       })
@@ -66,7 +69,7 @@ class ThrottleControls extends React.Component {
 
   componentWillReceiveProps(nextProps) {
     const { data } = nextProps
-    if (data && typeof(data.speed) !== 'undefined') {
+    if (data && typeof data.speed !== 'undefined') {
       this.setState({
         speed: data.speed,
       })
@@ -76,14 +79,18 @@ class ThrottleControls extends React.Component {
   handleFnPress = name => {
     if (this.pendingFnPress) return
     this.pendingFnPress = true
-    this.previousFnState = this.props.data.functions.find(fn => fn.name === name).value
-    this.props.onChange({
-      id: this.props.data.id,
-      functionUpdates: { [name]: true },
-    })
     setTimeout(() => {
       this.pendingFnPress = false
-    }, 100)
+    }, 500)
+    this.previousFnState = this.props.data.functions.find(
+      fn => fn.name === name,
+    ).value
+    if (this.previousFnState !== true) {
+      this.props.onChange({
+        id: this.props.data.id,
+        functionUpdates: { [name]: true },
+      })
+    }
   }
 
   handleFnRelease = name => {
@@ -97,7 +104,7 @@ class ThrottleControls extends React.Component {
         functionUpdates: { [name]: lockable ? !this.previousFnState : false },
       })
       this.pendingFnRelease = false
-    }, 100)
+    }, 500)
   }
 
   handleReverse = () => {
@@ -153,12 +160,13 @@ class ThrottleControls extends React.Component {
       <Button
         className={classes.btnFunction}
         key={f.name}
-        variant="raised"
+        variant="contained"
         color={f.value ? 'secondary' : 'primary'}
         onMouseDown={this.handleFnPress.bind(this, f.name)}
         onMouseUp={this.handleFnRelease.bind(this, f.name)}
         onTouchStart={this.handleFnPress.bind(this, f.name)}
-        onTouchEnd={this.handleFnRelease.bind(this, f.name)}>
+        onTouchEnd={this.handleFnRelease.bind(this, f.name)}
+      >
         {f.label || f.name}
       </Button>
     ))
@@ -166,25 +174,31 @@ class ThrottleControls extends React.Component {
     return (
       <div className={classes.root} style={{ height: height }}>
         <div className={classes.grid}>
-          <Button className={classes.btnStop} color="primary" onClick={this.handleStop}>
+          <Button
+            className={classes.btnStop}
+            variant="contained"
+            color="secondary"
+            onClick={this.handleStop}
+          >
+            <StopIcon />
             Stop
           </Button>
-          <Button
+          <Fab
             className={classes.btnReverse}
-            variant="fab"
-            mini
+            size="small"
             color={data.forward ? 'primary' : 'secondary'}
-            onClick={this.handleReverse}>
+            onClick={this.handleReverse}
+          >
             <ChevronLeftIcon />
-          </Button>
-          <Button
+          </Fab>
+          <Fab
             className={classes.btnForward}
-            variant="fab"
-            mini
+            size="small"
             color={data.forward ? 'secondary' : 'primary'}
-            onClick={this.handleForward}>
+            onClick={this.handleForward}
+          >
             <ChevronRightIcon />
-          </Button>
+          </Fab>
           <ThrottleSlider
             className={classes.slider}
             height={height - 100}

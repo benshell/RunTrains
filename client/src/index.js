@@ -23,7 +23,9 @@ const cache = new InMemoryCache()
 const errorLink = onError(({ operation, graphQLErrors, networkError }) => {
   const { cache } = operation.getContext()
   if (graphQLErrors) {
-    graphQLErrors.map(({ message }) => console.error(`[GraphQL error]: ${message}`))
+    graphQLErrors.map(({ message }) =>
+      console.error(`[GraphQL error]: ${message}`),
+    )
   }
   if (networkError) {
     console.log(`[Network error]: ${networkError}`)
@@ -70,7 +72,9 @@ const httpLink = new HttpLink({
 })
 
 const wsLink = new WebSocketLink({
-  uri: `ws${SERVER_SSL ? 's' : ''}://${SERVER_HOST}:${SERVER_PORT}/subscriptions`,
+  uri: `ws${
+    SERVER_SSL ? 's' : ''
+  }://${SERVER_HOST}:${SERVER_PORT}/subscriptions`,
   options: {
     reconnect: true,
     reconnectionAttempts: 99999,
