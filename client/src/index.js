@@ -15,7 +15,7 @@ import './index.css'
 import { SERVER_HOST, SERVER_PORT, SERVER_SSL } from './constants.js'
 import App from './App'
 import StatusMessages from './StatusMessages'
-import registerServiceWorker from './registerServiceWorker'
+// import registerServiceWorker from './registerServiceWorker'
 import { NETWORK_STATUS } from './queries'
 
 const cache = new InMemoryCache()
@@ -105,4 +105,4 @@ const ApolloApp = (
 )
 
 ReactDOM.render(ApolloApp, document.getElementById('root'))
-registerServiceWorker()
+// registerServiceWorker()
