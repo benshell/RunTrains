@@ -1,3 +1,8 @@
+if (process.env.NODE_ENV !== 'production') {
+  const dotenv = require('dotenv')
+  dotenv.config()
+}
+
 const PORT = process.env.PORT || 8000
 const MOCK_JMRI = process.env.MOCK_JMRI || false // useful when testing without JMRI available
 const JMRI_HOST = process.env.JMRI_HOST || 'localhost'

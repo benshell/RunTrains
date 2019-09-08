@@ -18,6 +18,8 @@ const JMRI_JSON_API = `http://${JMRI_HOST}:${JMRI_PORT}/json/`
 
 let ws
 let wsReady = false
+let rateLimit = 100 // min time before JMRI additional messages
+let isRateLimited = false
 let pingTimer = 0
 let sendTimer = 0
 let pendingSends = []
@@ -38,7 +40,13 @@ if (MOCK_JMRI) {
 
     ws.on('error', err => {
       wsReady = false
-      console.error('JMRI connection error:', JMRI_WS_API)
+      console.error(
+        'JMRI connection error',
+        JMRI_WS_API,
+        err,
+        'resetting connection in',
+        JMRI_HEARTBEAT_INTERVAL,
+      )
       setTimeout(() => {
         jmri.init()
       }, JMRI_HEARTBEAT_INTERVAL)
@@ -57,11 +65,13 @@ if (MOCK_JMRI) {
       }, JMRI_HEARTBEAT_INTERVAL)
 
       // Sync current throttles back to JMRI in case the connection to JMRI was lost.
-      // TODO: Figure out if these timeouts are necessary
+      // These timeouts seem to be necessary anytime we are requesting a throttle.
       const trains = store.getState().trains
       trains.forEach((t, i) => {
         t.addresses.forEach((address, j) => {
           setTimeout(() => {
+            if (DEBUGGING)
+              console.log('Re-initializing throttle after JMRI init', address)
             jmri.send(
               JSON.stringify({
                 type: 'throttle',
@@ -75,14 +85,21 @@ if (MOCK_JMRI) {
       // Try (continually) to process any pending sends
       if (sendTimer) clearInterval(sendTimer)
       sendTimer = setInterval(() => {
-        if (wsReady) {
-          const data = pendingSends.shift()
-          if (data) {
-            console.log('Re-sending data...')
-            jmri.send(data)
+        if (!wsReady) return
+        const data = pendingSends.shift()
+        if (!data) return
+        console.log('Sending pending data', data)
+        ws.send(data, error => {
+          console.log('Response', data, error)
+          if (error) {
+            console.error('Critical JMRI send error! Re-initializing...', error)
+            wsReady = false
+            setTimeout(() => {
+              jmri.init()
+            }, 3000)
           }
-        }
-      }, 1000)
+        })
+      }, 500)
     })
 
     ws.on('message', function incoming(message) {
@@ -131,16 +148,28 @@ if (MOCK_JMRI) {
     })
   }
 
-  jmri.send = data => {
+  jmri.queue = data => {
+    pendingSends.push(data)
     if (!wsReady) {
-      console.log('JMRI not ready for send!')
+      if (DEBUGGING)
+        console.log('JMRI not ready for send! Adding to pending:', data)
       pendingSends.push(data)
       return
     }
+  }
+
+  jmri.send = data => {
+    if (!wsReady) {
+      if (DEBUGGING)
+        console.log('JMRI not ready for send! Adding to pending:', data)
+      pendingSends.push(data)
+      return
+    }
+
     if (DEBUGGING) console.log('JMRI send: ', data)
     ws.send(data, error => {
       if (error) {
-        console.log('JMRI send error!', error)
+        console.error('Critical JMRI send error! Re-initializing...', error)
         wsReady = false
         setTimeout(() => {
           jmri.init()
@@ -154,10 +183,11 @@ if (MOCK_JMRI) {
       .get(JMRI_JSON_API + 'roster')
       .then(response => {
         const { data } = response
+        console.log(`Loaded roster with ${data.length} entries`)
         store.dispatch(syncRoster({ source: 'jmri', ...data }))
       })
       .catch(function(error) {
-        console.log(error)
+        console.error('Error loading JMRI roster', error)
       })
   }
 }
@@ -176,6 +206,8 @@ pubsub.subscribe('trainAdded', ({ trainAdded: train }) => {
 pubsub.subscribe('trainUpdated', data => {
   const { trainUpdated: train } = data
   const { source, functions, ...changes } = data.changes || {}
+  if (DEBUGGING)
+    console.log('JMRI handling trainUpdated', JSON.stringify(changes))
   if (train.source === 'jmri') return
   const fnChanges = (functions || []).reduce(
     (acc, val) => ({ ...acc, [val.name]: val.value }),
@@ -211,13 +243,20 @@ pubsub.subscribe('trainRemoved', ({ trainRemoved: train }) => {
         },
       }),
     )
-    jmri.send(
-      JSON.stringify({
-        type: 'throttle',
-        data: { throttle: String(address), release: null },
-      }),
-    )
+    // It might not be necessary, or a good idea, to ever release a locomotive. If RunTrains is
+    // acting as the hub of operations, just removing a train from internal memory should be
+    // enough.
+    // jmri.send(
+    //   JSON.stringify({
+    //     type: 'throttle',
+    //     data: { throttle: String(address), release: null },
+    //   }),
+    // )
   })
+})
+
+pubsub.subscribe('updateRoster', () => {
+  jmri.loadRoster()
 })
 
 module.exports = jmri

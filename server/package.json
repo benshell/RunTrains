@@ -4,7 +4,7 @@
   "description": "The server portion of a web-based DCC train control system",
   "main": "src/app.js",
   "author": "Ben Shell",
-  "license": "GPL",
+  "license": "GPL-3.0-or-later",
   "scripts": {
     "start": "nodemon src/app.js",
     "test": "tape ./tests/**/*.test.js | ./node_modules/.bin/tap-spec",
@@ -15,6 +15,7 @@
     "axios": "^0.18.0",
     "cors": "^2.8.4",
     "deep-equal": "^1.0.1",
+    "dotenv": "^8.0.0",
     "express": "^4.16.2",
     "graphql": "^0.13.1",
     "graphql-subscriptions": "^0.5.8",

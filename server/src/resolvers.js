@@ -62,6 +62,10 @@ const resolvers = {
       store.dispatch(removeTrain(args.id))
       return args.id
     },
+    updateRoster: () => {
+      pubsub.publish('updateRoster')
+      return true
+    },
   },
 }
 

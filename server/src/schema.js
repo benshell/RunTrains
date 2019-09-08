@@ -90,6 +90,8 @@ type Mutation {
   removeTrain(
     id: String!,
   ): String
+
+  updateRoster: Boolean
 }
 
 type DCCFunction {
