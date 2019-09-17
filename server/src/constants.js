@@ -11,6 +11,8 @@ const JMRI_HEARTBEAT_INTERVAL = process.env.JMRI_HEARTBEAT_INTERVAL || 10000
 const CLIENT_URLS =
   process.env.CLIENT_URLS || 'http://localhost:3000,http://localhost:8000' // for CORS
 const DEBUGGING = process.env.DEBUGGING || false
+const SYNC_ROSTER = 'jmri'
+const SYNC_THROTTLES = 'cbus' // or 'jmri'
 
 module.exports = {
   PORT,
@@ -20,4 +22,6 @@ module.exports = {
   JMRI_HEARTBEAT_INTERVAL,
   CLIENT_URLS,
   DEBUGGING,
+  SYNC_ROSTER,
+  SYNC_THROTTLES,
 }

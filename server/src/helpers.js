@@ -6,6 +6,12 @@ const getTrain = id => {
   return loadFunctions(train)
 }
 
+const getTrainsByAddress = address => {
+  address = parseInt(address)
+  const trains = store.getState().trains || []
+  return trains.filter(t => t.addresses.indexOf(address) > -1)
+}
+
 const loadFunctions = train => {
   if (!train) return
   const roster = store.getState().roster || []
@@ -24,5 +30,6 @@ const loadFunctions = train => {
 
 module.exports = {
   getTrain,
+  getTrainsByAddress,
   loadFunctions,
 }

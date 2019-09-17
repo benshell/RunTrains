@@ -7,6 +7,7 @@ const bodyParser = require('body-parser')
 const { setTimeout } = require('timers')
 const cors = require('cors')
 const jmri = require('./jmri')
+const cbus = require('./cbus')
 const { PORT, CLIENT_URLS } = require('./constants')
 const { schema } = require('./schema')
 
@@ -55,6 +56,9 @@ app.use(express.static('static'))
 if (require.main === module) {
   // Start JMRI websocket client
   jmri.init()
+
+  // Start CBUS client
+  cbus.init()
 
   // Start GraphQL websocket server
   const ws = createServer(app)
