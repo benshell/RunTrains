@@ -13,14 +13,29 @@ to your home screen and use it like any other app, even when you are offline
 Defaults are configured in `src/constants.js` and can be overridden using
 environment variables:
 
-* REACT_APP_SERVER_HOST = 'localhost'
-* REACT_APP_SERVER_PORT = 8000
-* REACT_APP_SERVER_SSL = false
+- REACT_APP_SERVER_HOST = 'localhost'
+- REACT_APP_SERVER_PORT = 8000
+- REACT_APP_SERVER_SSL = false
 
 The `REACT_APP_` prefixes are a security feature of `create-react-app`.
 Also, as part of the `create-react-app` framework, the default development port
 can also be overridden with enivornment variables:
 
-* PORT = 3000
+- PORT = 3000
+
+## Docker (optional)
+
+From the current directory:
+
+```
+docker build -t runtrains-client .
+```
+
+Be sure to build the server too.
+Then from one directory level up, run
+
+```
+docker-compose up
+```
 
 ## See also the README in the root folder: `../README.md`

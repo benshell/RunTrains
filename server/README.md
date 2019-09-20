@@ -10,13 +10,15 @@ computer or LAN as JMRI, which connects with JMRI through the JMRI JSON API.
 Defaults are configured in `src/constants.js` and can be overridden using
 environment variables:
 
-* PORT = 8000
-* MOCK_JMRI = false // useful when testing without JMRI available
-* JMRI_HOST = 'localhost'
-* JMRI_PORT = 12080
-* JMRI_HEARTBEAT_INTERVAL = 10000
-* CLIENT_URLS = 'http://localhost:3000,http://localhost:8000' // for CORS
-* DEBUGGING = false // adds additional console logging
+- PORT = 8000
+- MOCK_JMRI = false // useful when testing without JMRI available
+- CBUS_HOST = 'localhost'
+- CBUS_PORT = 5550
+- JMRI_HOST = 'localhost'
+- JMRI_PORT = 12080
+- JMRI_HEARTBEAT_INTERVAL = 10000
+- CLIENT_URLS = 'http://localhost:3000,http://localhost:8000' // for CORS
+- DEBUGGING = false // adds additional console logging
 
 ## Running as a background task
 
@@ -190,13 +192,28 @@ add).
 
 ### Arch Linux
 
-* I found it helpful to add the JMRI user (my user account) to the
+- I found it helpful to add the JMRI user (my user account) to the
   `uucp` group as otherwise JMRI wasn't able to access my DCC system over
   USB:<br>
   `sudo usermod -a -G uucp MYUSER`
 
-* When starting JMRI from the command line, if you get an error of
+- When starting JMRI from the command line, if you get an error of
   `No X11 DISPLAY variable was set`, run this first:<br>
   `export DISPLAY=:0.0`
+
+### Docker (optional alternative)
+
+From the current directory:
+
+```
+docker build -t runtrains-server .
+```
+
+Be sure to build the client too.
+Then from one directory level up, run
+
+```
+docker-compose up
+```
 
 ## See also the README in the root folder: `../README.md`

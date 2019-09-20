@@ -11,7 +11,12 @@ const {
 const { updateTrain } = require('./actions/trains')
 const { syncRoster } = require('./actions/roster')
 const pubsub = require('./pubsub')
-const { DEBUGGING, SYNC_THROTTLES } = require('./constants')
+const {
+  DEBUGGING,
+  CBUS_HOST,
+  CBUS_PORT,
+  SYNC_THROTTLES,
+} = require('./constants')
 
 // CAN_ID values in the range 100 to 127 have been reserved (so far) for modules
 // with fixed CAN_IDs such as the PC interfaces and DCC command station which
@@ -83,7 +88,7 @@ cbus.init = () => {
 
   client = new net.Socket()
 
-  client.connect(5550, '127.0.0.1', () => {
+  client.connect(CBUS_PORT, CBUS_HOST, () => {
     console.log('Connected to CBUS server')
 
     setInterval(() => {
