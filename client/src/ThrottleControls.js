@@ -2,6 +2,7 @@ import React from 'react'
 import Button from '@material-ui/core/Button'
 import { withStyles } from '@material-ui/core/styles'
 import ThrottleSlider from './ThrottleSlider'
+import ThrottleFn from './ThrottleFn'
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft'
 import ChevronRightIcon from '@material-ui/icons/ChevronRight'
 import StopIcon from '@material-ui/icons/Stop'
@@ -76,37 +77,6 @@ class ThrottleControls extends React.Component {
     }
   }
 
-  handleFnPress = name => {
-    if (this.pendingFnPress) return
-    this.pendingFnPress = true
-    setTimeout(() => {
-      this.pendingFnPress = false
-    }, 500)
-    this.previousFnState = this.props.data.functions.find(
-      fn => fn.name === name,
-    ).value
-    if (this.previousFnState !== true) {
-      this.props.onChange({
-        id: this.props.data.id,
-        functionUpdates: { [name]: true },
-      })
-    }
-  }
-
-  handleFnRelease = name => {
-    if (this.pendingFnRelease) return
-    this.pendingFnRelease = true
-    setTimeout(() => {
-      const functionDef = this.props.data.functions.find(f => f.name === name)
-      const lockable = functionDef ? functionDef.lockable : false
-      this.props.onChange({
-        id: this.props.data.id,
-        functionUpdates: { [name]: lockable ? !this.previousFnState : false },
-      })
-      this.pendingFnRelease = false
-    }, 500)
-  }
-
   handleReverse = () => {
     if (this.props.data.forward) {
       this.setState({ speed: 0 })
@@ -156,20 +126,6 @@ class ThrottleControls extends React.Component {
     const labelledFns = functions.filter(f => f.label)
     const standardFns = functions.filter((f, i) => i < 13)
     const visibleFns = labelledFns.length ? labelledFns : standardFns
-    const buttons = visibleFns.map(f => (
-      <Button
-        className={classes.btnFunction}
-        key={f.name}
-        variant="contained"
-        color={f.value ? 'secondary' : 'primary'}
-        onMouseDown={this.handleFnPress.bind(this, f.name)}
-        onMouseUp={this.handleFnRelease.bind(this, f.name)}
-        onTouchStart={this.handleFnPress.bind(this, f.name)}
-        onTouchEnd={this.handleFnRelease.bind(this, f.name)}
-      >
-        {f.label || f.name}
-      </Button>
-    ))
 
     return (
       <div className={classes.root} style={{ height: height }}>
@@ -206,7 +162,19 @@ class ThrottleControls extends React.Component {
             value={speed}
             onChange={this.handleSpeedChange}
           />
-          {buttons}
+          {visibleFns.map(fn => (
+            <ThrottleFn
+              fn={{ ...fn, lockable: true }}
+              key={fn.name}
+              onChange={val => {
+                this.props.onChange({
+                  id: this.props.data.id,
+                  functionUpdates: { [fn.name]: val },
+                })
+              }}
+              className={classes.btnFunction}
+            />
+          ))}
         </div>
       </div>
     )

@@ -1,7 +1,13 @@
 import React from 'react'
 import { Query, Mutation } from 'react-apollo'
 import TrainForm from './TrainForm'
-import { ALL_TRAINS, ALL_ROSTER_ENTRIES, TRAIN, UPDATE_TRAIN, REMOVE_TRAIN } from './queries'
+import {
+  ALL_TRAINS,
+  ALL_ROSTER_ENTRIES,
+  TRAIN,
+  UPDATE_TRAIN,
+  REMOVE_TRAIN,
+} from './queries'
 
 class TrainEdit extends React.PureComponent {
   render() {
@@ -14,7 +20,7 @@ class TrainEdit extends React.PureComponent {
           if (error) return `Error! ${error.message}`
           return (
             <Query query={ALL_ROSTER_ENTRIES}>
-              {({ loading, error, data: { allRosterEntries } }) => {
+              {({ loading, error, data }) => {
                 if (loading) return 'Loading roster...'
                 if (error) return `Error! ${error.message}`
                 return (
@@ -22,10 +28,14 @@ class TrainEdit extends React.PureComponent {
                     mutation={REMOVE_TRAIN}
                     variables={{ id: train.id }}
                     update={(cache, { data: { removeTrain: removedId } }) => {
-                      const { allTrains } = cache.readQuery({ query: ALL_TRAINS })
+                      const { allTrains } = cache.readQuery({
+                        query: ALL_TRAINS,
+                      })
                       cache.writeQuery({
                         query: ALL_TRAINS,
-                        data: { allTrains: allTrains.filter(t => t.id !== removedId) },
+                        data: {
+                          allTrains: allTrains.filter(t => t.id !== removedId),
+                        },
                       })
                       this.props.onClose()
                     }}
@@ -35,7 +45,9 @@ class TrainEdit extends React.PureComponent {
                         mutation={UPDATE_TRAIN}
                         variables={{ id: train.id }}
                         update={(cache, { data: { updateTrain } }) => {
-                          const { allTrains } = cache.readQuery({ query: ALL_TRAINS })
+                          const { allTrains } = cache.readQuery({
+                            query: ALL_TRAINS,
+                          })
                           cache.writeQuery({
                             query: ALL_TRAINS,
                             data: {
@@ -55,7 +67,7 @@ class TrainEdit extends React.PureComponent {
                         {updateTrain => (
                           <TrainForm
                             initialTrain={train}
-                            roster={allRosterEntries}
+                            roster={(data && data.allRosterEntries) || []}
                             onSave={train => {
                               updateTrain({
                                 variables: train,

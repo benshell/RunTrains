@@ -9,7 +9,7 @@ class TrainAdd extends React.PureComponent {
 
     return (
       <Query query={ALL_ROSTER_ENTRIES}>
-        {({ loading, error, data: { allRosterEntries } }) => {
+        {({ loading, error, data }) => {
           if (loading) return 'Loading roster...'
           if (error) return `Error! ${error.message}`
           return (
@@ -26,7 +26,7 @@ class TrainAdd extends React.PureComponent {
             >
               {(addTrain, { data }) => (
                 <TrainForm
-                  roster={allRosterEntries}
+                  roster={(data && data.allRosterEntries) || []}
                   onSave={train => {
                     addTrain({
                       variables: train,
