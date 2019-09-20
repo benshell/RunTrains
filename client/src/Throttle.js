@@ -66,7 +66,8 @@ const withMutation = graphql(UPDATE_TRAIN, {
           functions: train.functions.map(fn => {
             if (
               !vars.functions ||
-              typeof vars.functions[fn.name] === 'undefined'
+              typeof vars.functions[fn.name] === 'undefined' ||
+              vars.functions[fn.name] === fn.value
             )
               return fn
             return { ...fn, value: vars.functions[fn.name] }
