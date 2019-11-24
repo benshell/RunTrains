@@ -108,7 +108,8 @@ cbus.init = () => {
   })
 
   client.on('close', () => {
-    console.log('CBUS server connection closed')
+    console.error('CBUS server connection closed')
+    cbus.init()
   })
 }
 
@@ -441,7 +442,13 @@ pubsub.subscribe('trainUpdated', data => {
         .filter(fn => fn.num >= start && fn.num <= end)
         .map(fn => {
           const bitVal = fn.value ? 0b1 : 0b0
-          return bitVal << (fn.num - start)
+          // range F0-F4 is out of order... bits are F1, ..., F4, F0
+          if (range === '1') {
+            if (fn.num === 0) return bitVal << 4
+            return bitVal << (fn.num - 1)
+          } else {
+            return bitVal << (fn.num - start)
+          }
         })
         .reduce((acc, val) => acc | val, ''),
     ]
@@ -458,6 +465,17 @@ pubsub.subscribe('trainUpdated', data => {
       }
     })
   }
+})
+
+pubsub.subscribe('trainRemoved', ({ trainRemoved: train }) => {
+  train.addresses.forEach(address => {
+    // TODO: Stop the train first
+    // Actually, this should probably be done elsewhere, before this event is fired
+    const session = getSessionByAddress(address)
+    removeSession(session)
+
+    // TODO: Send the release command to MERG?
+  })
 })
 
 module.exports = cbus

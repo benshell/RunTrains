@@ -164,7 +164,7 @@ class ThrottleControls extends React.Component {
           />
           {visibleFns.map(fn => (
             <ThrottleFn
-              fn={{ ...fn, lockable: true }}
+              fn={fn}
               key={fn.name}
               onChange={val => {
                 this.props.onChange({

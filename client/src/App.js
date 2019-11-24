@@ -32,8 +32,8 @@ class App extends Component {
       <Router>
         <Frame>
           <Switch>
-            <Route path="/" exact component={Throttles} />
             <Route path="/system" component={System} />
+            <Route component={Throttles} />
           </Switch>
         </Frame>
       </Router>

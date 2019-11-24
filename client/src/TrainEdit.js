@@ -23,6 +23,7 @@ class TrainEdit extends React.PureComponent {
               {({ loading, error, data }) => {
                 if (loading) return 'Loading roster...'
                 if (error) return `Error! ${error.message}`
+                const roster = (data && data.allRosterEntries) || []
                 return (
                   <Mutation
                     mutation={REMOVE_TRAIN}
@@ -67,7 +68,7 @@ class TrainEdit extends React.PureComponent {
                         {updateTrain => (
                           <TrainForm
                             initialTrain={train}
-                            roster={(data && data.allRosterEntries) || []}
+                            roster={roster}
                             onSave={train => {
                               updateTrain({
                                 variables: train,
