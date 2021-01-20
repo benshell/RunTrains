@@ -20,7 +20,7 @@
     "graphql": "^0.13.1",
     "graphql-subscriptions": "^0.5.8",
     "graphql-tools": "^2.21.0",
-    "immer": "^1.2.0",
+    "immer": "^8.0.1",
     "proxyquire": "^2.0.0",
     "redux": "^3.7.2",
     "redux-logger": "^3.0.6",
