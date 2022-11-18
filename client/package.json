@@ -34,7 +34,7 @@
     "react-dom": "^16.8.6",
     "react-draggable": "^3.3.0",
     "react-router-dom": "^5.0.1",
-    "react-scripts": "3.0.1",
+    "react-scripts": "5.0.1",
     "react-sortable-hoc": "^1.9.1",
     "react-swipeable-views": "^0.13.3",
     "recompose": "^0.30.0",
@@ -45,7 +45,7 @@
     "@storybook/addon-actions": "^5.1.10",
     "@storybook/addon-links": "^5.1.10",
     "@storybook/addons": "^5.1.10",
-    "@storybook/react": "^5.1.10",
+    "@storybook/react": "^6.5.13",
     "babel-core": "^6.26.3",
     "babel-runtime": "^6.26.0"
   },
